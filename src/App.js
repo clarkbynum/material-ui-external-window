@@ -1,24 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Button from "@material-ui/core/Button";
+import { Popout } from "react-popout-component";
+import ExternalWindowPortal from "./ExternalWindowPortal";
+import SimpleMenu from "./SimpleMenu";
+import useInterval from "./useInterval";
 
 function App() {
+  const [isEjected, setEjected] = useState(false);
+  const [count, setCount] = useState(0);
+  const content = (
+    <div>
+      count: {count}
+      <SimpleMenu />
+    </div>
+  );
+  useInterval(() => {
+    setCount(count + 1);
+  }, 1000);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button onClick={() => setEjected(!isEjected)}>Toggle Eject</Button>
+      {isEjected ? (
+        // <Popout onClose={() => setEjected(false)}>{content}</Popout>
+        <ExternalWindowPortal listenForUnload={() => setEjected(false)}>
+          {content}
+        </ExternalWindowPortal>
+      ) : (
+        content
+      )}
     </div>
   );
 }
